@@ -7,7 +7,7 @@
 ZDPMix(d_train, formula, d_test, burnin, iter, phi_y = c(shape = 5, rate
   = 1000), beta_prior_mean = NULL, beta_prior_var = NULL,
   gamma_prior_mean = NULL, gamma_prior_var = NULL, init_k = 10,
-  beta_var_scale = 1000, x_var_scale = 1)
+  beta_var_scale = 1000, mu_scale = 1, tau_scale = 1)
 }
 \arguments{
 \item{d_train}{Input dataset.}

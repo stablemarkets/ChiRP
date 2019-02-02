@@ -8,7 +8,7 @@ ZDPMix<-function(d_train, formula, d_test, burnin, iter,
                  phi_y=c(shape=5, rate=1000),
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  gamma_prior_mean=NULL, gamma_prior_var=NULL,
-                 init_k=10, beta_var_scale=1000, x_var_scale=1){
+                 init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1){
 
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
@@ -78,13 +78,13 @@ ZDPMix<-function(d_train, formula, d_test, burnin, iter,
   prior_means <- apply(x[,xall_names_num, drop=F], 2, mean)
   names(prior_means) <- xall_names_num
 
-  prior_var <- x_var_scale*apply(x[,xall_names_num, drop=F], 2, var)
+  prior_var <- mu_scale*apply(x[,xall_names_num, drop=F], 2, var)
   names(prior_var) <- xall_names_num
 
   g2 <- rep(2, n_num_p)
   names(g2) <- xall_names_num
 
-  b2 <- 10*apply(x[,xall_names_num, drop=F], 2, var)
+  b2 <- tau_scale*apply(x[,xall_names_num, drop=F], 2, var)
   names(b2) <- xall_names_num
 
   K <- init_k
