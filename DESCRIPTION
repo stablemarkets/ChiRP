@@ -1,0 +1,11 @@
+Package: ChiRP
+Title: Chinese Restaurant Process Mixtures of Regressions
+Version: 1.0.0
+Authors@R: person("Arman", "Oganisian", email = "aoganisi@upenn.edu", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
+Depends: R (>= 3.5.0)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: LaplacesDemon, MASS, mvtnorm, invgamma
+RoxygenNote: 6.1.1.9000
