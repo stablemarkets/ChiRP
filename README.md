@@ -18,4 +18,4 @@ If you have any issues with the code, please open an issue on GitHub.
 ## Contact
 The corresponding package author is Arman Oganisian (email: aoganisi@upenn.edu).
 
-[logo]: https://github.com/stablemarkets/ChiRP/blob/master/logo.png
+[logo]: https://github.com/stablemarkets/ChiRP/blob/master/logo.png=10x10
