@@ -15,6 +15,9 @@ library(ChiRP)
 
 Note this package is still in beta. You can follow updates about the package on [twitter](https://twitter.com/StableMarkets) .
 
+## How to Cite this Package
+Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
+
 ## Reporting Bugs and Issues
 If you have any issues with the code, please open an issue on GitHub.
 
