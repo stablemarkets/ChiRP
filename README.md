@@ -2,7 +2,7 @@
 
 
 ## About
-The R package `ChiRP` is an MCMC-based implementation of *Chi*nese *R*estaurant *P*rocess Mixtures of various regression models. See here for examples and model details: https://stablemarkets.github.io/ChiRPsite/index.html.
+The R package `ChiRP` is an MCMC-based implementation of **Chi**nese **R**estaurant **P**rocess Mixtures of various regression models. See here for examples and model details: https://stablemarkets.github.io/ChiRPsite/index.html.
 
 Install using `devtools` package
 ```
