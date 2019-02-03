@@ -20,6 +20,18 @@ rcond_post_beta <- function(y, xm, psi, beta_prior_mean, beta_prior_var){
   return(draw)  
 }
 
+cond_post_beta_pdp <- function(beta_vec, y, xm, beta_prior_mean, beta_prior_var){
+  
+  eta <- xm %*% beta_vec
+  eta <- ifelse(eta < -30, -30, ifelse(eta>5, 5, eta))
+  p <- pnorm(eta)
+  
+  lk <- sum(dbinom(x = y, size = 1, prob = p, log = T))
+  pr <- mvtnorm::dmvnorm(x = beta_vec, beta_prior_mean, diag(beta_prior_var), log = T)
+  
+  return(lk + pr)
+}
+
 rcond_post_psi <- function(beta, y, xm, g1, b1){
   n_k <- length(y)
   if(n_k==0){ 
