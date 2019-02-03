@@ -1,4 +1,6 @@
-# Repository for `ChiRP` Package ![logo](logo.png){:height="36px" width="36px"}.
+# Repository for `ChiRP` Package 
+<a href="url"><img src="logo.png" align="left" height="48" width="48" ></a>
+
 
 ## About
 The R package `ChiRP` is an MCMC-based implementation of *Chi*nese *R*estaurant *P*rocess Mixtures of various regression models. See here for examples and model details: https://stablemarkets.github.io/ChiRPsite/index.html.
