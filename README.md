@@ -1,4 +1,4 @@
-# Repository for `ChiRP` Package ![alt][logo]
+# Repository for `ChiRP` Package ![logo](logo.png){:height="36px" width="36px"}.
 
 ## About
 The R package `ChiRP` is an MCMC-based implementation of *Chi*nese *R*estaurant *P*rocess Mixtures of various regression models. See here for examples and model details: https://stablemarkets.github.io/ChiRPsite/index.html.
@@ -17,5 +17,3 @@ If you have any issues with the code, please open an issue on GitHub.
 
 ## Contact
 The corresponding package author is Arman Oganisian (email: aoganisi@upenn.edu).
-
-[logo]: https://github.com/stablemarkets/ChiRP/blob/master/logo.png =10x10
