@@ -1,4 +1,4 @@
-# Repository for `ChiRP` Package <a href="url"><img src="logo.png" align="right" height="66" width="66" ></a>
+# Repository for `ChiRP` Package <a href="url"><img src="logo.png" align="right" height="100" width="100" ></a>
 
 
 ## About
