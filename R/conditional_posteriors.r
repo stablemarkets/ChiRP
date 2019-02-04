@@ -24,9 +24,8 @@ cond_post_beta_pdp <- function(beta_vec, y, xm, beta_prior_mean, beta_prior_var)
   
   eta <- xm %*% beta_vec
   eta <- ifelse(eta < -30, -30, ifelse(eta>5, 5, eta))
-  p <- pnorm(eta)
   
-  lk <- sum(dbinom(x = y, size = 1, prob = p, log = T))
+  lk <- sum(dbinom(x = y, size = 1, prob = LaplacesDemon::invlogit(eta), log = T))
   pr <- mvtnorm::dmvnorm(x = beta_vec, beta_prior_mean, diag(beta_prior_var), log = T)
   
   return(lk + pr)

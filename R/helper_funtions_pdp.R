@@ -37,9 +37,9 @@ class_update_train_pdp <- function(n, K , alpha, name_new, uniq_clabs, clabs,
     }
     
     eta <- x %*% beta_shell[,k,drop=F]
-    eta <- ifelse(eta < -30, -30, ifelse(eta>5, 5, eta))
+    eta <- ifelse(eta < -10, -10, ifelse(eta>10, 10, eta))
     
-    lk_exist <- lk_exist + dbinom(y, 1,prob = pnorm(eta), T )
+    lk_exist <- lk_exist + dbinom(y, 1,prob = LaplacesDemon::invlogit(eta), T )
     
     
     c_shell[,k] <- lk_exist + pr_exist[,k]
@@ -59,9 +59,9 @@ class_update_train_pdp <- function(n, K , alpha, name_new, uniq_clabs, clabs,
   
   
   eta <- x %*% t(beta_new)
-  eta <- ifelse(eta < -30, -30, ifelse(eta>5, 5, eta))
+  eta <- ifelse(eta < -10, -10, ifelse(eta>10, 10, eta))
   
-  lk_exist <- lk_exist + dbinom(y, 1,prob = pnorm( eta ), T )
+  lk_exist <- lk_exist + dbinom(y, 1,prob = LaplacesDemon::invlogit( eta ), T )
   
   c_shell[,name_new] <- lk_new + pr_new
   
@@ -128,7 +128,7 @@ post_pred_draw_train_pdp <- function(n, x, pc, beta_shell){
   clabs <- unique(pc)
   
   for( k in clabs ){
-    y_pp[pc==k] <- pnorm( x[pc==k,, drop=F] %*% beta_shell[,k,drop=F] )
+    y_pp[pc==k] <- LaplacesDemon::invlogit( x[pc==k,, drop=F] %*% beta_shell[,k,drop=F] )
   }
   
   return(y_pp)
@@ -143,10 +143,10 @@ post_pred_draw_test_pdp <- function(n, x, pc, beta_shell,
   clabs <- unique(pc)
   
   for( k in setdiff(clabs, name_new) ){
-    y_pp[pc==k] <- pnorm( x[pc==k,, drop=F] %*% beta_shell[,k,drop=F] )
+    y_pp[pc==k] <- LaplacesDemon::invlogit( x[pc==k,, drop=F] %*% beta_shell[,k,drop=F] )
   }
   
-  y_pp[pc==name_new] <- pnorm( x[pc==name_new,, drop=F] %*% t(beta_new) )
+  y_pp[pc==name_new] <- LaplacesDemon::invlogit( x[pc==name_new, , drop=F] %*% t(beta_new) )
   
   return(y_pp)
 }

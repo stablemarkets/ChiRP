@@ -5,7 +5,6 @@
 #' @keywords Dirichlet
 #' @export
 PDPMix<-function(d_train, formula, d_test, burnin, iter,
-                 phi_y=c(shape=5, rate=1000),
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  prop_sigma_b = diag(rep(.025, nparams)),
                  init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1){
@@ -62,9 +61,6 @@ PDPMix<-function(d_train, formula, d_test, burnin, iter,
     reg <- glm(data=d_train, formula = formula, family = binomial('probit'))
     beta_prior_var <- beta_var_scale*diag(vcov(reg))
   }
-  
-  g1=phi_y[1]
-  b1=phi_y[2]
   
   prior_means <- apply(x[,xall_names_num, drop=F], 2, mean)
   names(prior_means) <- xall_names_num
