@@ -4,7 +4,7 @@
 #' @param d_train Input dataset.
 #' @keywords Dirichlet
 #' @export
-ZDPMix<-function(d_train, formula, d_test, burnin, iter,
+ZDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
                  phi_y=c(shape=5, rate=1000),
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  gamma_prior_mean=NULL, gamma_prior_var=NULL,

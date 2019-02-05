@@ -4,7 +4,7 @@
 #' @param d_train Input dataset.
 #' @keywords Dirichlet
 #' @export
-PDPMix<-function(d_train, formula, d_test, burnin, iter,
+PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1,
                  prop_sigma_b = diag(rep(.025, nparams))){
