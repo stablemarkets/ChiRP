@@ -9,9 +9,9 @@ NDPMix(d_train, formula, d_test = NULL, burnin, iter, phi_y = c(shape =
   init_k = 10, beta_var_scale = 10000, mu_scale = 1, tau_scale = 1)
 }
 \arguments{
-\item{d_train}{A `data.frame` object with outcomes and model covariates/features. All features must be `as.numeric` - either continuous or binary with binary variables coded using `1` and `0`. Categorical features are not supported. We recommend standardizing all continuous features.}
+\item{d_train}{A `data.frame` object with outcomes and model covariates/features. All features must be `as.numeric` - either continuous or binary with binary variables coded using `1` and `0`. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
 
-\item{formula}{Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features.}
+\item{formula}{Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
 
 \item{d_test}{Optional `data.frame` object containing a test set of subjects containing all variables specifed in `formula`}
 
