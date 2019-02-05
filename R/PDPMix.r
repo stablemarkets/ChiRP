@@ -15,9 +15,11 @@ PDPMix<-function(d_train, formula, d_test, burnin, iter,
   x <- all.vars(formula[[3]]) # covariate names
   y <- all.vars(formula[[2]]) # outcome name
   
-  xt <- model.matrix(data=d_test,
-                     object= as.formula(paste0('~ ',paste0(x, collapse = '+'))))
-  nt <- nrow(xt)
+  if(!is.null(d_test)){
+    xt <- model.matrix(data=d_test,
+                       object= as.formula(paste0('~ ',paste0(x, collapse = '+'))))
+    nt <- nrow(xt)
+  }
   
   x_type <- vector(length = length(x))
   for(v in 1:length(x)){
@@ -125,21 +127,31 @@ PDPMix<-function(d_train, formula, d_test, burnin, iter,
   c_n_new <- matrix(NA, nrow = 2, ncol = n_num_p)
   colnames(c_n_new) <- xall_names_num
   
-  c_b_new_test <- numeric(length = n_bin_p)
-  names(c_b_new_test) <- xall_names_bin
-  
-  c_n_new_test <- matrix(NA, nrow = 2, ncol = n_num_p)
-  colnames(c_n_new_test) <- xall_names_num
-  
-  predictions <- vector(mode = 'list', length = 2)
-  predictions[[1]] <- matrix(nrow = n, ncol = store_l)
-  predictions[[2]] <- matrix(nrow = nt, ncol = store_l)
-  names(predictions) <- c('train','test')
-  
-  cluster_inds <- vector(mode = 'list', length = 2)
-  cluster_inds[[1]] <- matrix(nrow = n, ncol = store_l)
-  cluster_inds[[2]] <- matrix(nrow = nt, ncol = store_l)
-  names(cluster_inds) <- c('train','test')
+  if(!is.null(d_test)){
+    c_b_new_test <- numeric(length = n_bin_p)
+    names(c_b_new_test) <- xall_names_bin
+    
+    c_n_new_test <- matrix(NA, nrow = 2, ncol = n_num_p)
+    colnames(c_n_new_test) <- xall_names_num
+    
+    predictions <- vector(mode = 'list', length = 2)
+    predictions[[1]] <- matrix(nrow = n, ncol = store_l)
+    predictions[[2]] <- matrix(nrow = nt, ncol = store_l)
+    names(predictions) <- c('train','test')
+    
+    cluster_inds <- vector(mode = 'list', length = 2)
+    cluster_inds[[1]] <- matrix(nrow = n, ncol = store_l)
+    cluster_inds[[2]] <- matrix(nrow = nt, ncol = store_l)
+    names(cluster_inds) <- c('train','test')
+  }else{
+    predictions <- vector(mode = 'list', length = 1)
+    predictions[[1]] <- matrix(nrow = n, ncol = store_l)
+    names(predictions) <- c('train')
+    
+    cluster_inds <- vector(mode = 'list', length = 1)
+    cluster_inds[[1]] <- matrix(nrow = n, ncol = store_l)
+    names(cluster_inds) <- c('train')
+  }
   
   ###------------------------------------------------------------------------###
   #### 2 - Set Initial Values                                               ####
@@ -326,59 +338,67 @@ PDPMix<-function(d_train, formula, d_test, burnin, iter,
     if( i > burnin ){
       
       ###--------------------------------------------------------------------###
-      #### 5.0 - Predictions on a Training and Test set                     ####
+      #### 5.0 - Predictions on a Training and Test set & Store Results     ####
       ###--------------------------------------------------------------------###
       
-      name_new_test<-paste0('c', max(as.numeric(substr(class_names,2,10)))+1)
-      
-      for(p in xall_names_bin){
-        c_b_new_test[p] <- rbeta(n = 1, shape1 = 1, shape2 = 1)
+      if(!is.null(d_test)){
+        name_new_test<-paste0('c', max(as.numeric(substr(class_names,2,10)))+1)
+        
+        for(p in xall_names_bin){
+          c_b_new_test[p] <- rbeta(n = 1, shape1 = 1, shape2 = 1)
+        }
+        
+        for(p in xall_names_num){
+          c_n_new_test[1, p] <- rnorm(n = 1, prior_means[p], sqrt(prior_var[p]) )
+          c_n_new_test[2, p] <- invgamma::rinvgamma(n = 1,shape = g2[p], rate = b2[p])
+        }
+        
+        beta_new <- mvtnorm::rmvnorm(n = 1, mean = beta_prior_mean,
+                                     sigma = diag(beta_prior_var) )
+        
+        weights_test <- class_update_test_pdp(n = nt, K = length(class_names) ,
+                                              alpha =a,
+                                              name_new = name_new_test,
+                                              uniq_clabs = colnames(beta_shell),
+                                              clabs = c_shell[,1],
+                                              x = xt,
+                                              x_cat_shell = c_b_shell,
+                                              x_num_shell = c_n_shell,
+                                              cat_idx = xall_names_bin,
+                                              num_idx = xall_names_num,
+                                              cat_new = c_b_new_test,
+                                              num_new = c_n_new_test)
+        
+        c_shell_test <- apply(weights_test, 1, FUN = sample,
+                              x=c(colnames(beta_shell), name_new_test),
+                              size=1, replace=T)
+        
+        test_pred <- post_pred_draw_test_pdp(n=nt, x=xt, pc=c_shell_test,
+                                             beta_shell = beta_shell,
+                                             name_new = name_new_test,
+                                             beta_new = beta_new)
+        
+        train_pred<-post_pred_draw_train_pdp(n=n, x=x, pc=c_shell[,1],
+                                             beta_shell = beta_shell)
+        
+        # cluster indicators
+        cluster_inds[['train']][, i-burnin] <- c_shell[,1]
+        cluster_inds[['test']][, i-burnin] <- c_shell_test
+        
+        # predictions
+        predictions[['train']][, i-burnin ] <- train_pred
+        predictions[['test']][, i-burnin  ] <- test_pred
+      }else{
+        train_pred<-post_pred_draw_train_pdp(n=n, x=x, pc=c_shell[,1],
+                                             beta_shell = beta_shell)
+        
+        # cluster indicators
+        cluster_inds[['train']][, i-burnin] <- c_shell[,1]
+        
+        # predictions
+        predictions[['train']][, i-burnin ] <- train_pred
+        
       }
-      
-      for(p in xall_names_num){
-        c_n_new_test[1, p] <- rnorm(n = 1, prior_means[p], sqrt(prior_var[p]) )
-        c_n_new_test[2, p] <- invgamma::rinvgamma(n = 1,shape = g2[p], rate = b2[p])
-      }
-      
-      beta_new <- mvtnorm::rmvnorm(n = 1, mean = beta_prior_mean,
-                                   sigma = diag(beta_prior_var) )
-
-      weights_test <- class_update_test_pdp(n = nt, K = length(class_names) ,
-                                            alpha =a,
-                                            name_new = name_new_test,
-                                            uniq_clabs = colnames(beta_shell),
-                                            clabs = c_shell[,1],
-                                            x = xt,
-                                            x_cat_shell = c_b_shell,
-                                            x_num_shell = c_n_shell,
-                                            cat_idx = xall_names_bin,
-                                            num_idx = xall_names_num,
-                                            cat_new = c_b_new_test,
-                                            num_new = c_n_new_test)
-      
-      c_shell_test <- apply(weights_test, 1, FUN = sample,
-                            x=c(colnames(beta_shell), name_new_test),
-                            size=1, replace=T)
-      
-      test_pred <- post_pred_draw_test_pdp(n=nt, x=xt, pc=c_shell_test,
-                                           beta_shell = beta_shell,
-                                           name_new = name_new_test,
-                                           beta_new = beta_new)
-      
-      train_pred<-post_pred_draw_train_pdp(n=n, x=x, pc=c_shell[,1],
-                                           beta_shell = beta_shell)
-      
-      ###--------------------------------------------------------------------###
-      #### 6.0 - Store Results                                              ####
-      ###--------------------------------------------------------------------###
-      
-      # cluster indicators
-      cluster_inds[['train']][, i-burnin] <- c_shell[,1]
-      cluster_inds[['test']][, i-burnin] <- c_shell_test
-      
-      # predictions
-      predictions[['train']][, i-burnin ] <- train_pred
-      predictions[['test']][, i-burnin  ] <- test_pred
     }
     
     
