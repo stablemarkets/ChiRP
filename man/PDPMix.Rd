@@ -4,9 +4,10 @@
 \alias{PDPMix}
 \title{Function for posterior sampling of DP mixture of zero-inflated regressions.}
 \usage{
-PDPMix(d_train, formula, d_test, burnin, iter, beta_prior_mean = NULL,
-  beta_prior_var = NULL, prop_sigma_b = diag(rep(0.025, nparams)),
-  init_k = 10, beta_var_scale = 1000, mu_scale = 1, tau_scale = 1)
+PDPMix(d_train, formula, d_test = NULL, burnin, iter,
+  beta_prior_mean = NULL, beta_prior_var = NULL, init_k = 10,
+  beta_var_scale = 1000, mu_scale = 1, tau_scale = 1,
+  prop_sigma_b = diag(rep(0.025, nparams)))
 }
 \arguments{
 \item{d_train}{Input dataset.}
