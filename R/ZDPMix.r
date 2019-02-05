@@ -8,7 +8,8 @@ ZDPMix<-function(d_train, formula, d_test, burnin, iter,
                  phi_y=c(shape=5, rate=1000),
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  gamma_prior_mean=NULL, gamma_prior_var=NULL,
-                 init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1){
+                 init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1,
+                 prop_sigma_z = diag(rep(.025, nparams)) ){
 
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
@@ -188,8 +189,6 @@ ZDPMix<-function(d_train, formula, d_test, burnin, iter,
     c_n_shell[[p]][[2]][ 1 , ] <- rep(0, K)
     c_n_shell[[p]][[2]][ 1 , ] <- rep(20^2, K)
   }
-
-  prop_sigma_z <- diag(rep(.025, nparams))
 
   psi_shell[1,1:K] <- rep(500000, K)
 
