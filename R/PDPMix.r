@@ -6,8 +6,8 @@
 #' @export
 PDPMix<-function(d_train, formula, d_test, burnin, iter,
                  beta_prior_mean=NULL, beta_prior_var=NULL,
-                 prop_sigma_b = diag(rep(.025, nparams)),
-                 init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1){
+                 init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1,
+                 prop_sigma_b = diag(rep(.025, nparams))){
   
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
