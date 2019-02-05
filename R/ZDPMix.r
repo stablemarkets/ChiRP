@@ -1,7 +1,7 @@
 #' Function for posterior sampling of DP mixture of zero-inflated regressions.
 #'
 #' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
-#' The function is build for zero-inflated, but otherwise continuous, outcomes.
+#' The function is built for zero-inflated, but otherwise continuous, outcomes.
 #' 
 #' Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
 #' 
@@ -10,9 +10,9 @@
 #' @param formula Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features.
 #' @param burnin interger specifying number of burn-in MCMC draws. 
 #' @param iter interger greater than `burnin` specifying how many total MCMC draws to take.
-#' @param init_k Optional . Interger specifying the initial number of clusters to kick off the MCMC sampler.
+#' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
 #' @param prop_sigma_z Optional. If you specified `p` covariates in `formula`, `p+1` regression parameters are sampled for the probability of the outcome being zero using a Metropolis step.  `prop_sigma_z` is a `p+1` by `p+1` covariance matrix for the Metropolis proposal distribution.
-#' @param phy_y Optional. Length two `as.numeric` vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance. 
+#' @param phi_y Optional. Length two `as.numeric` vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance. 
 #' @param beta_prior_mean Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on positive outcomes.
 #' @param beta_prior_var Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on positive outcomes.
 #' @param beta_var_scale Optional. A multiplicative constant that scales `beta_prior_var`. If you leave `beta_prior_mean` and `beta_prior_var` at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.

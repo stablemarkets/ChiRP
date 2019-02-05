@@ -1,8 +1,63 @@
 #' Function for posterior sampling of DP mixture of Gaussian regressions.
 #'
-#' This function takes input dataset and performs posterior sampling. It returns posterior predictive draws and posterior cluster assignments.
-#' @param d_train Input dataset.
-#' @keywords Dirichlet
+#' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
+#' The function is built for continuous outcomes.
+#' 
+#' Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+#' 
+#' @param d_train A `data.frame` object with outcomes and model covariates/features. All features must be `as.numeric` - either continuous or binary with binary variables coded using `1` and `0`. Categorical features are not supported. We recommend standardizing all continuous features.
+#' @param d_test Optional `data.frame` object containing a test set of subjects containing all variables specifed in `formula`
+#' @param formula Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features.
+#' @param burnin interger specifying number of burn-in MCMC draws. 
+#' @param iter interger greater than `burnin` specifying how many total MCMC draws to take.
+#' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
+#' @param phi_y Optional. Length two `as.numeric` vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance. 
+#' @param beta_prior_mean Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on the outcomes.
+#' @param beta_prior_var Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.
+#' @param beta_var_scale Optional. A multiplicative constant that scales `beta_prior_var`. If you leave `beta_prior_mean` and `beta_prior_var` at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.
+#' @param mu_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. `mu_scale=2` specifies that the variance of the Gaussian prior is twice as large as the empirical variance.
+#' @param tau_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. `tau_scale=2` specifies that the rate of the InvGamma prior is twice as large as the empirical variance.
+#' @return Returns `predictions$train` and `cluster_inds$train`. `predictions$train` returns an `nrow(d_train)` by `iter - burnin` matrix of posterior predictions. `cluster_inds$train` returns an `nrow(d_train)` by `iter - burnin` matrix of cluster assignment indicators, which can be input into the function `cluster_assign_mode()` to compute posterior mode assignment. `predictions$test` and `cluster_inds$test` are returned if `d_test` is specified.
+#' @keywords Dirichlet Process Gaussian
+#' @examples
+#' # Simulate data from sin() wave.
+#' set.seed(3)
+#' 
+#' n <- 200
+#' # training 
+#' x<-seq(1,10*pi, length.out = n) # confounder
+#' y<-rnorm( n = length(x), sin(.5*x), .07*x)
+#' d <- data.frame(x=x, y=y)
+#' d$x <- scale(d$x) # standardize covariates
+#' d_test <- data.frame(x=seq(1.5,2,.01))
+#' 
+#' # run model.
+#' set.seed(1)
+#' NDP_res<-NDPMix(d_train = d, d_test = d_test,
+#'                 formula = y ~ x,
+#'                 burnin=4000, iter = 5000,
+#'                 phi_y = c(5,10), beta_var_scale = 10000, 
+#'                 init_k = 10, mu_scale = 2, tau_scale = .001)
+#'                 
+#' # Plot Results                 
+#' par(mfrow=c(1,1))
+#' # plot observed data
+#' plot(d$x, d$y, pch=20, ylim=c(-10,10), xlim=c(min(d$x), 2))
+#'  
+#' # plot 100 posterior predictive draws on the training set
+#' for(i in 900:1000){
+#'   points(d$x, NDP_res$predictions$train[,i], col='gray', pch=20)  
+#' }
+#' points(d$x, d$y, pch=20) # overlay data
+#'  
+#' # plot posterior predictive mean on training.
+#' points(d$x, rowMeans(NDP_res$predictions$train), col='blue', pch=20)
+#'  
+#' # plot posterior predictive mean on test set.
+#' points(d_test$x, rowMeans(NDP_res$predictions$test), col='red', pch=20)
+#' legend('topleft', legend = c('Training Data','Predictive Draws',
+#'                              'Predictive Mean (training)','Predictive Mean (test)' ),
+#'        col=c('black','gray','blue','red'), pch=c(20,20,20,20))                 
 #' @export
 NDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
                  phi_y=c(shape=5, rate=1000),

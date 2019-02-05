@@ -21,6 +21,8 @@ ZDPMix(d_train, formula, d_test = NULL, burnin, iter, phi_y = c(shape =
 
 \item{iter}{interger greater than `burnin` specifying how many total MCMC draws to take.}
 
+\item{phi_y}{Optional. Length two `as.numeric` vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance.}
+
 \item{beta_prior_mean}{Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on positive outcomes.}
 
 \item{beta_prior_var}{Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on positive outcomes.}
@@ -29,7 +31,7 @@ ZDPMix(d_train, formula, d_test = NULL, burnin, iter, phi_y = c(shape =
 
 \item{gamma_prior_var}{Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the zero probability logistic model's conditional mean parameter vector. Default is vector of twos - moderately flat on the odds ratio scale.}
 
-\item{init_k}{Optional . Interger specifying the initial number of clusters to kick off the MCMC sampler.}
+\item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
 
 \item{beta_var_scale}{Optional. A multiplicative constant that scales `beta_prior_var`. If you leave `beta_prior_mean` and `beta_prior_var` at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.}
 
@@ -38,15 +40,13 @@ ZDPMix(d_train, formula, d_test = NULL, burnin, iter, phi_y = c(shape =
 \item{tau_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. `tau_scale=2` specifies that the rate of the InvGamma prior is twice as large as the empirical variance.}
 
 \item{prop_sigma_z}{Optional. If you specified `p` covariates in `formula`, `p+1` regression parameters are sampled for the probability of the outcome being zero using a Metropolis step.  `prop_sigma_z` is a `p+1` by `p+1` covariance matrix for the Metropolis proposal distribution.}
-
-\item{phy_y}{Optional. Length two `as.numeric` vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance.}
 }
 \value{
 Returns `predictions$train` and `cluster_inds$train`. `predictions$train` returns an `nrow(d_train)` by `iter - burnin` matrix of posterior predictions. `cluster_inds$train` returns an `nrow(d_train)` by `iter - burnin` matrix of cluster assignment indicators, which can be input into the function `cluster_assign_mode()` to compute posterior mode assignment. `predictions$test` and `cluster_inds$test` are returned if `d_test` is specified.
 }
 \description{
 This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
-The function is build for zero-inflated, but otherwise continuous, outcomes.
+The function is built for zero-inflated, but otherwise continuous, outcomes.
 }
 \details{
 Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.

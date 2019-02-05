@@ -1,8 +1,60 @@
-#' Function for posterior sampling of DP mixture of zero-inflated regressions.
+#' Function for posterior sampling of DP mixture of logistic regressions for binary data.
 #'
-#' This function takes input dataset and performs posterior sampling. It returns posterior predictive draws, posterior clustering, and posterior parameter draws.
-#' @param d_train Input dataset.
-#' @keywords Dirichlet
+#' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
+#' The function is built for zero-inflated, but otherwise continuous, outcomes.
+#' 
+#' Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+#' 
+#' @param d_train A `data.frame` object with outcomes and model covariates/features. All features must be `as.numeric` - either continuous or binary with binary variables coded using `1` and `0`. Categorical features are not supported. We recommend standardizing all continuous features.
+#' @param d_test Optional `data.frame` object containing a test set of subjects containing all variables specifed in `formula`
+#' @param formula Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features.
+#' @param burnin interger specifying number of burn-in MCMC draws. 
+#' @param iter interger greater than `burnin` specifying how many total MCMC draws to take.
+#' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
+#' @param prop_sigma_b Optional. If you specified `p` covariates in `formula`, `p+1` regression parameters are sampled for the probability of the outcome being one using a Metropolis step.  `prop_sigma_b` is a `p+1` by `p+1` covariance matrix for the Metropolis proposal distribution.
+#' @param beta_prior_mean Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running logistic regression on the outcome.
+#' @param beta_prior_var Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running logistic regression on the outcomes..
+#' @param beta_var_scale Optional. A multiplicative constant that scales `beta_prior_var`. If you leave `beta_prior_mean` and `beta_prior_var` at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.
+#' @param mu_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. `mu_scale=2` specifies that the variance of the Gaussian prior is twice as large as the empirical variance.
+#' @param tau_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. `tau_scale=2` specifies that the rate of the InvGamma prior is twice as large as the empirical variance.
+#' @return Returns `predictions$train` and `cluster_inds$train`. `predictions$train` returns an `nrow(d_train)` by `iter - burnin` matrix of posterior predictions. `cluster_inds$train` returns an `nrow(d_train)` by `iter - burnin` matrix of cluster assignment indicators, which can be input into the function `cluster_assign_mode()` to compute posterior mode assignment. `predictions$test` and `cluster_inds$test` are returned if `d_test` is specified.
+#' @keywords Dirichlet Process binary outcomes logistic
+#' @examples
+#' set.seed(1)
+#' n<-1000 # simulate 1000 subjects
+#' 
+#' # Cluster 1: 5 continuous covariates with mean 5, variance 5
+#' x1 <- replicate(2,  rnorm(n/2, 10, 5) ) 
+#' 
+#' # Cluster 2: 5 continuous covariates with mean 5, variance 5
+#' x2 <- replicate(2,  rnorm(n/2, -10, 5))
+#' 
+#' # outcome for both clusters
+#' y <- numeric(length = n)
+#' y[1:500] <- rbinom(500, 1, pnorm(-5 + x1 %*% matrix(c(-2,2), ncol=1) )  )
+#' y[501:1000] <- rbinom(500, 1, pnorm(5 + x2 %*% matrix(c(2,-2), ncol=1)  ) )
+#' 
+#' # combine into data.frame
+#' d <- data.frame(rbind(x1,x2), y)
+#' 
+#' # normalize covariates...helps for numerical stability.
+#' d$X1 <- scale(d$X1)
+#' d$X2 <- scale(d$X2)
+#' 
+#' set.seed(100)
+#' 
+#' # split data into training (800 obs) and testing (200 obs)
+#' test_ids <- sample(1:1000, 200, F)
+#' d_test <- d[test_ids, ]
+#' d_train <- d[-test_ids, ]
+#' 
+#' logit_res <- PDPMix(d_train = d_train, d_test = d_test, 
+#'                     formula = y ~ X1 + X2,
+#'                     burnin = 4000, iter = 5000, 
+#'                     beta_prior_var = rep(3, 3), # fairly flat priors
+#'                     beta_prior_mean = rep(0,3), # null centered priors
+#'                     prop_sigma_b = diag(rep(.001, 3)) , # proposal covariance 
+#'                     init_k = 5, tau_scale = 3, mu_scale = 3)
 #' @export
 PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
                  beta_prior_mean=NULL, beta_prior_var=NULL,
