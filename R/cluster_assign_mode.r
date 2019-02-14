@@ -1,11 +1,13 @@
 #' Function for computing the posterior mode cluster assignment of subjects in test and training data sets.
 #'
-#' This function takes the `cluster_inds` - which is a posterior matrix of cluster assignments output by NDPMix(), PDPMix(), and ZDPMix() and computers the posterior mode cluster assignment while implementing a deterministic re-labeling of subjects.
+#' This function takes the \code{cluster_inds} - which is a posterior matrix of cluster assignments output by \code{NDPMix()}, \code{PDPMix()}, and \code{ZDPMix()} and computers the posterior mode cluster assignment while implementing a deterministic re-labeling of subjects.
 #'  
-#' Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+#' Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and detailed model and parameter descriptions.
 #' 
-#' @param c_shell set this to `cluster_inds` (for either training or testing sets). `cluster_inds` is output by NDPMix(), PDPMix(), and ZDPMix().
-#' @return This function returns a list of two objects: `adjmat` and `class_mem`. The former is an n X n adjacency matrix showing posterior probability subject i and j being clustered together. This can be visualized using a network diagram. `class_mem` is a vector of length n giving posterior mode clsuter membership for each of the n subjects. This can be used for cluster-specific analysis, for example.
+#' Please see \url{https://arxiv.org/abs/1810.09494}, section on hyperparameters and label switching for more information.
+#' 
+#' @param c_shell set this to \code{cluster_inds} (for either training or testing sets). \code{cluster_inds} is output by \code{NDPMix()}, \code{PDPMix()}, and \code{ZDPMix()}.
+#' @return This function returns a list of two objects: \code{adjmat} and \code{class_mem}. For \code{n} subjects, the former is an \code{n} X \code{n} adjacency matrix showing posterior probability subject i and j being clustered together. This can be visualized using a network diagram. \code{class_mem} is a vector of length \code{n} giving posterior mode clsuter membership for each of the \code{n} subjects. This can be used for cluster-specific analysis, for example.
 #' @examples
 #' # simulate data 
 #' 
