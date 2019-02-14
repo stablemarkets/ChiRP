@@ -49,7 +49,9 @@ This function takes in a training data.frame and optional testing data.frame and
 The function is built for zero-inflated, but otherwise continuous, outcomes.
 }
 \details{
-Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html}for examples and detailed model and parameter descriptions.
+
+Please see \url{https://arxiv.org/abs/1810.09494} for a methodological reference.
 }
 \examples{
 set.seed(1)

@@ -10,39 +10,39 @@ PDPMix(d_train, formula, d_test = NULL, burnin, iter,
   prop_sigma_b = diag(rep(0.025, nparams)))
 }
 \arguments{
-\item{d_train}{A `data.frame` object with outcomes and model covariates/features. All features must be `as.numeric` - either continuous or binary with binary variables coded using `1` and `0`. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
+\item{d_train}{A \code{data.frame} object with outcomes and model covariates/features. The outcome must be \code{numeric} coded with \code{1}s and \code{0}s. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
 
-\item{formula}{Specified in the usual way, e.g. for `p=2` covariates, `y ~ x1 + x1`. All covariates - continuous and binary - must be `as.numeric` , with binary variables coded as `1` or `0`. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
+\item{formula}{Specified in the usual way, e.g. for \code{p=2} covariates, \code{y ~ x1 + x1}. All covariates - continuous and binary - must be \code{as.numeric} , with binary variables coded as \code{1} or \code{0}. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
 
-\item{d_test}{Optional `data.frame` object containing a test set of subjects containing all variables specifed in `formula`}
+\item{d_test}{Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.}
 
 \item{burnin}{interger specifying number of burn-in MCMC draws.}
 
-\item{iter}{interger greater than `burnin` specifying how many total MCMC draws to take.}
+\item{iter}{interger greater than \code{burnin} specifying how many total MCMC draws to take.}
 
-\item{beta_prior_mean}{Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running logistic regression on the outcome.}
+\item{beta_prior_mean}{Optional. If there are \code{p} covariates as length \code{p+1} \code{as.numeric} vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running logistic regression on the outcome.}
 
-\item{beta_prior_var}{Optional. If there are `p` covariates as length `p+1` `as.numeric` vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running logistic regression on the outcomes..}
+\item{beta_prior_var}{Optional. If there are \code{p} covariates as length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running logistic regression on the outcomes..}
 
 \item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
 
-\item{beta_var_scale}{Optional. A multiplicative constant that scales `beta_prior_var`. If you leave `beta_prior_mean` and `beta_prior_var` at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.}
+\item{beta_var_scale}{Optional. A multiplicative constant that scales \code{beta_prior_var}. If you leave \code{beta_prior_mean} and \code{beta_prior_var} at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.}
 
-\item{mu_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. `mu_scale=2` specifies that the variance of the Gaussian prior is twice as large as the empirical variance.}
+\item{mu_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. \code{mu_scale=2} specifies that the variance of the Gaussian prior is twice as large as the empirical variance.}
 
-\item{tau_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. `tau_scale=2` specifies that the rate of the InvGamma prior is twice as large as the empirical variance.}
+\item{tau_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. \code{tau_scale=2} specifies that the rate of the InvGamma prior is twice as large as the empirical variance.}
 
-\item{prop_sigma_b}{Optional. If you specified `p` covariates in `formula`, `p+1` regression parameters are sampled for the probability of the outcome being one using a Metropolis step.  `prop_sigma_b` is a `p+1` by `p+1` covariance matrix for the Metropolis proposal distribution.}
+\item{prop_sigma_b}{Optional. If you specified \code{p} covariates in \code{formula}, \code{p+1} regression parameters are sampled for the probability of the outcome being one using a Metropolis step.  \code{prop_sigma_b} is a \code{p+1} by \code{p+1} covariance matrix for the Metropolis proposal distribution.}
 }
 \value{
-Returns `predictions$train` and `cluster_inds$train`. `predictions$train` returns an `nrow(d_train)` by `iter - burnin` matrix of posterior predictions. `cluster_inds$train` returns an `nrow(d_train)` by `iter - burnin` matrix of cluster assignment indicators, which can be input into the function `cluster_assign_mode()` to compute posterior mode assignment. `predictions$test` and `cluster_inds$test` are returned if `d_test` is specified.
+Returns \code{predictions$train} and \code{cluster_inds$train}. \code{predictions$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of posterior predictions. \code{cluster_inds$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of cluster assignment indicators, which can be input into the function \code{cluster_assign_mode()} to compute posterior mode assignment. \code{predictions$test} and \code{cluster_inds$test} are returned if \code{d_test} is specified.
 }
 \description{
 This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
-The function is built for zero-inflated, but otherwise continuous, outcomes.
+The function is built for binary outcomes.
 }
 \details{
-Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and detailed model and parameter descriptions.
 }
 \examples{
 set.seed(1)

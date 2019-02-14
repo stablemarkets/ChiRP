@@ -3,7 +3,9 @@
 #' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
 #' The function is built for zero-inflated, but otherwise continuous, outcomes.
 #' 
-#' Please see https://stablemarkets.github.io/ChiRPsite/index.html for examples and detailed model and parameter descriptions.
+#' Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html}for examples and detailed model and parameter descriptions.
+#' 
+#' Please see \url{https://arxiv.org/abs/1810.09494} for a methodological reference.
 #' 
 #' @param d_train A \code{data.frame} object with outcomes and model covariates/features. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
 #' @param d_test Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. All the same rules for \code{d_train} apply to \code{d_test}.
