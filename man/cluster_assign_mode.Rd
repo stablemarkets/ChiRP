@@ -36,7 +36,7 @@ Y3 <- rnorm(n = n, mean = 300 + 2*X13, 40)*(1-rbinom(n, 1, prob = pnorm( -3 -.2*
 d <- data.frame(X1=c(X11, X12, X13), Y = c(Y1, Y2, Y3))
 
 # split into training and testing
-ids <- sample(1:600, size = 500, replace = F )
+ids <- sample(1:600, size = 500, replace = FALSE )
 
 d$X1 <- scale(d$X1)
 
