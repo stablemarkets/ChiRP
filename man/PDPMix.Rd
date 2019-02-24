@@ -69,7 +69,7 @@ d$X2 <- scale(d$X2)
 set.seed(100)
 
 # split data into training (800 obs) and testing (200 obs)
-test_ids <- sample(1:1000, 200, F)
+test_ids <- sample(1:1000, 200, replace = FALSE )
 d_test <- d[test_ids, ]
 d_train <- d[-test_ids, ]
 
