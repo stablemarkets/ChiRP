@@ -46,7 +46,7 @@
 #' d_test <- d[-ids, ]
 #' 
 #' res <- ChiRP::ZDPMix(d_train = d_train, d_test = d_test, formula = Y ~ X1,
-#'                      burnin=2000, iter=3000, init_k = 5, phi_y = c(10, 10000))
+#'                      burnin=100, iter=200, init_k = 5, phi_y = c(10, 10000))
 #' @export
 ZDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
                  phi_y=c(shape=5, rate=1000),

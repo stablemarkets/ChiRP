@@ -75,7 +75,7 @@ d_train <- d[-test_ids, ]
 
 logit_res <- PDPMix(d_train = d_train, d_test = d_test, 
                     formula = y ~ X1 + X2,
-                    burnin = 4000, iter = 5000, 
+                    burnin = 100, iter = 200, 
                     beta_prior_var = rep(3, 3), # fairly flat priors
                     beta_prior_mean = rep(0,3), # null centered priors
                     prop_sigma_b = diag(rep(.001, 3)) , # proposal covariance 

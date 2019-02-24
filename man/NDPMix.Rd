@@ -59,29 +59,10 @@ d_test <- data.frame(x=seq(1.5,2,.01))
 set.seed(1)
 NDP_res<-NDPMix(d_train = d, d_test = d_test,
                 formula = y ~ x,
-                burnin=4000, iter = 5000,
+                burnin=100, iter = 200,
                 phi_y = c(5,10), beta_var_scale = 10000, 
                 init_k = 10, mu_scale = 2, tau_scale = .001)
                 
-# Plot Results                 
-par(mfrow=c(1,1))
-# plot observed data
-plot(d$x, d$y, pch=20, ylim=c(-10,10), xlim=c(min(d$x), 2))
- 
-# plot 100 posterior predictive draws on the training set
-for(i in 900:1000){
-  points(d$x, NDP_res$predictions$train[,i], col='gray', pch=20)  
-}
-points(d$x, d$y, pch=20) # overlay data
- 
-# plot posterior predictive mean on training.
-points(d$x, rowMeans(NDP_res$predictions$train), col='blue', pch=20)
- 
-# plot posterior predictive mean on test set.
-points(d_test$x, rowMeans(NDP_res$predictions$test), col='red', pch=20)
-legend('topleft', legend = c('Training Data','Predictive Draws',
-                             'Predictive Mean (training)','Predictive Mean (test)' ),
-       col=c('black','gray','blue','red'), pch=c(20,20,20,20))                 
 }
 \keyword{Dirichlet}
 \keyword{Gaussian}
