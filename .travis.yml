@@ -4,6 +4,6 @@ cache: packages
 
 warnings_are_errors: true
 
-os:
+os: travis_wait 30
   - linux
   - osx
