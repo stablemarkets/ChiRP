@@ -68,7 +68,7 @@ d <- data.frame(X1=c(X11, X12, X13), Y = c(Y1, Y2, Y3))
 
 d$X1 <- scale(d$X1)
 
-ids <- sample(1:600, size = 500, replace = F )
+ids <- sample(1:600, size = 500, replace = FALSE )
 d_train <- d[ids,]
 d_test <- d[-ids, ]
 

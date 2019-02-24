@@ -39,7 +39,7 @@
 #' 
 #' d$X1 <- scale(d$X1)
 #' 
-#' ids <- sample(1:600, size = 500, replace = F )
+#' ids <- sample(1:600, size = 500, replace = FALSE )
 #' d_train <- d[ids,]
 #' d_test <- d[-ids, ]
 #' 
