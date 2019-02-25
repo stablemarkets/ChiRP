@@ -4,7 +4,7 @@ error_check <- function(func_args, model_type){
   y <- all.vars(func_args$formula[[2]]) # outcome name
   
   ## check init_k - initial number of clusters
-  if(class(func_args$init_k)!='numeric' | length(init_k)!=1 | init_k<0 ){
+  if(class(func_args$init_k)!='numeric' | length(func_args$init_k)!=1 | func_args$init_k<0 ){
     stop("ERROR: init_k must be length 1 numeric integer such that 0 < init_k <= n .")
   }else if( func_args$init_k %% 1 !=0 ){
     stop('ERROR: init_k must be an integer.')
@@ -86,7 +86,7 @@ error_check <- function(func_args, model_type){
       stop('ERROR: beta_prior_var should be a numeric vector.')
     }else if(length(func_args$beta_prior_var) != (length(x)+1) ){
       stop("ERROR: beta_prior_var should be length p+1, where p is number of covariates.")
-    }else if( max(beta_prior_var<0)==1 ){
+    }else if( max(func_args$beta_prior_var<0)==1 ){
       stop("ERROR: beta_prior_var should contain non-zero values since it is a vector of variances.")
     }
   }
@@ -138,7 +138,7 @@ error_check <- function(func_args, model_type){
         stop('ERROR: gamma_prior_var should be a numeric vector.')
       }else if(length(func_args$gamma_prior_var) != (length(x)+1) ){
         stop("ERROR: gamma_prior_var should be length p+1, where p is number of covariates.")
-      }else if( max(gamma_prior_var<0)==1 ){
+      }else if( max(func_args$gamma_prior_var<0)==1 ){
         stop("ERROR: gamma_prior_var should contain non-zero values since it is a vector of variances.")
       }
       
