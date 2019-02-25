@@ -13,9 +13,7 @@ error_check <- function(func_args, model_type){
   }
     
   ## Check burnin and iter settings
-  if( missing(func_args$burnin) | missing(func_args$iter) ){
-    stop("ERROR: must specigy burnin and iter.")
-  }else if( ! (func_args$burnin %% 1 ==0 & func_args$iter %% 1 ==0) ){
+  if( ! (func_args$burnin %% 1 ==0 & func_args$iter %% 1 ==0) ){
     stop("ERROR: burnin and iter must be intergers.")
   }else if( func_args$burnin < 0 | func_args$iter < 0){
     stop("ERROR: burnin and iter must be positive.")
@@ -28,9 +26,7 @@ error_check <- function(func_args, model_type){
   }
   
   # check training data
-  if( missing(func_args$d_train) ){
-    stop("ERROR: must specigy a training data.frame.")
-  }else if( !is.data.frame(func_args$d_train) ){
+  if( !is.data.frame(func_args$d_train) ){
     stop("ERROR: d_train is not a data.frame object.")
   }else if( nrow(func_args$d_train)==0 ){
     stop("ERROR: d_train has no rows.")
@@ -57,9 +53,7 @@ error_check <- function(func_args, model_type){
   # check testing data set if supplied.
   if(! is.null(func_args$d_test) ){
     
-    if( missing(func_args$d_test) ){
-      stop("ERROR: must specigy a training data.frame.")
-    }else if( !is.data.frame(func_args$d_test) ){
+    if( !is.data.frame(func_args$d_test) ){
       stop("ERROR: d_test is not a data.frame object.")
     }else if( nrow(func_args$d_test)==0 ){
       stop("ERROR: d_test has no rows.")

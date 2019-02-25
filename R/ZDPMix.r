@@ -48,7 +48,7 @@
 #' res <- ChiRP::ZDPMix(d_train = d_train, d_test = d_test, formula = Y ~ X1,
 #'                      burnin=100, iter=200, init_k = 5, phi_y = c(10, 10000))
 #' @export
-ZDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
+ZDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
                  phi_y=c(shape=5, rate=1000),
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  gamma_prior_mean=NULL, gamma_prior_var=NULL,
@@ -60,6 +60,8 @@ ZDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
   ###------------------------------------------------------------------------###
   
   # error checking user inputs
+  if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
+  
   func_args<-mget(names(formals()),sys.frame(sys.nframe()))
   error_check(func_args)
   
