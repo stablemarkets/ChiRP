@@ -138,7 +138,7 @@ error_check <- function(func_args, model_type){
       
     }
     
-    if( !is.null(func_args$prop_sigma_z) ){
+    if( is.null(func_args$prop_sigma_z) ){
       stop('ERROR: Proposal covariance is null.')
     }else if( class(func_args$prop_sigma_z)!='matrix' ){
       stop('ERROR: prop_sigma_z should be a (p+1) X (p+1) numeric covariance matrix')
@@ -168,7 +168,7 @@ error_check <- function(func_args, model_type){
       stop("ERROR: outcome must be coded as numeric vector with 1 and 0. 1 indicates events.")
     }
     
-    if( !is.null(func_args$prop_sigma_b) ){
+    if( is.null(func_args$prop_sigma_b) ){
       stop('ERROR: Proposal covariance is null.')
     }else if( class(func_args$prop_sigma_b)!='matrix' ){
       stop('ERROR: prop_sigma_b should be a (p+1) X (p+1) numeric covariance matrix')
