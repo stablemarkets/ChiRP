@@ -42,7 +42,7 @@ error_check <- function(func_args, model_type){
     stop("ERROR: nrow(d_train) < init_k.")
   }else if( max( ! x %in% colnames(func_args$d_train) )==1 ){
     stop("ERROR: Some covariate specified in formula are not in d_train")
-  }else if(  max(apply(func_args$d_train[,x, drop=F], 2, class)!=="numeric") ){
+  }else if(  max(apply(func_args$d_train[,x, drop=F], 2, class)!="numeric") ){
     stop("ERROR: All columns of d_train must be numeric.")
   }
   
@@ -67,7 +67,7 @@ error_check <- function(func_args, model_type){
       stop("ERROR: d_test has no columns.")
     }else if( max( ! x %in% colnames(func_args$d_test) )==1 ){
       stop("ERROR: Some covariate specified in formula are not in d_test.")
-    }else if(  max(apply(func_args$d_test[,x, drop=F], 2, class)!=="numeric") ){
+    }else if(  max(apply(func_args$d_test[,x, drop=F], 2, class)!="numeric") ){
       stop("ERROR: All columns of d_test must be numeric.")
     }
     
