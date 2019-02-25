@@ -54,6 +54,8 @@ NDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   # error checking user inputs
   if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
   
+  nparams <- length(x) + 1
+  
   func_args<-mget(names(formals()),sys.frame(sys.nframe()))
   error_check(func_args,'NDP')
   
@@ -80,7 +82,6 @@ NDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   x_names <- x
   x <- model.matrix(data=d_train, object = formula )
 
-  nparams <- ncol(x)
   n<-nrow(x)
 
   xall_names <- x_names
