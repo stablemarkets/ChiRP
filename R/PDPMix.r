@@ -66,6 +66,10 @@ PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
   ###------------------------------------------------------------------------###
+  # error checking user inputs
+  func_args<-mget(names(formals()),sys.frame(sys.nframe()))
+  error_handle(func_args)
+  
   x <- all.vars(formula[[3]]) # covariate names
   y <- all.vars(formula[[2]]) # outcome name
   
