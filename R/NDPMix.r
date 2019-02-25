@@ -55,7 +55,7 @@ NDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
   
   func_args<-mget(names(formals()),sys.frame(sys.nframe()))
-  error_check(func_args)
+  error_check(func_args,'NDP')
   
   x <- all.vars(formula[[3]]) # covariate names
   y <- all.vars(formula[[2]]) # outcome name
