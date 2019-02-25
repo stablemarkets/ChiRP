@@ -3,6 +3,8 @@ error_check <- function(func_args, model_type){
   x <- all.vars(func_args$formula[[3]]) # covariate names
   y <- all.vars(func_args$formula[[2]]) # outcome name
   
+  nparams <- length(x) + 1
+  
   ## check init_k - initial number of clusters
   if(class(func_args$init_k)!='numeric' | length(func_args$init_k)!=1 | func_args$init_k<0 ){
     stop("ERROR: init_k must be length 1 numeric integer such that 0 < init_k <= n .")
