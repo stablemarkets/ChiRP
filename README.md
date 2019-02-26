@@ -1,4 +1,5 @@
-#`ChiRP`: Chinese Restaurant Process Mixtures for Regression and Clustering <a href="url"><img src="logo.png" align="right" height="200" width="200" ></a>
+## `ChiRP`: Chinese Restaurant Process Mixtures for Regression and Clustering <a href="url"><img src="logo.png" align="right" height="200" width="200" ></a>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master)](https://travis-ci.org/stablemarkets/ChiRP)
 
