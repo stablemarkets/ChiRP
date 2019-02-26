@@ -4,7 +4,7 @@ Development Status:
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master)](https://travis-ci.org/stablemarkets/ChiRP)
-[![Coverage Status](https://coveralls.io/repos/github/stablemarkets/ChiRP/badge.svg?branch=master)](https://coveralls.io/github/stablemarkets/ChiRP?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/stablemarkets/ChiRP/badge.png?branch=master)](https://coveralls.io/github/stablemarkets/ChiRP?branch=master)
 
 ## About
 The R package `ChiRP` is an MCMC-based implementation of **Chi**nese **R**estaurant **P**rocess (CRP) Mixtures of various regression and clustering analysis. CRP models (aka Dirichlet Process models) are a class of Bayesian nonparametric models.
