@@ -58,7 +58,7 @@
 #'                     prop_sigma_b = diag(rep(.001, 3)) , # proposal covariance 
 #'                     init_k = 5, tau_scale = 3, mu_scale = 3)
 #' @export
-PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
+PDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
                  beta_prior_mean=NULL, beta_prior_var=NULL,
                  init_k=10, beta_var_scale=1000, mu_scale=1, tau_scale=1,
                  prop_sigma_b = diag(rep(.025, nparams))){
@@ -66,8 +66,16 @@ PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
   ###------------------------------------------------------------------------###
+  # error checking user inputs
+  if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
+  
   x <- all.vars(formula[[3]]) # covariate names
   y <- all.vars(formula[[2]]) # outcome name
+  
+  nparams <- length(x) + 1
+  
+  func_args<-mget(names(formals()),sys.frame(sys.nframe()))
+  error_check(func_args, 'PDP')
   
   if(!is.null(d_test)){
     xt <- model.matrix(data=d_test,
@@ -89,7 +97,6 @@ PDPMix<-function(d_train, formula, d_test=NULL, burnin, iter,
   x_names <- x
   x <- model.matrix(data=d_train, object = formula )
   
-  nparams <- ncol(x)
   n<-nrow(x)
   
   xall_names <- x_names
