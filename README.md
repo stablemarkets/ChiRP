@@ -34,7 +34,7 @@ The help file for each function contains an example that you can run directly in
 Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
 
 ## Reporting Bugs and Issues
-`ChiRP` uses the `testthat` package for unit-testing and Travis CI for continuous integration. 
+`ChiRP` uses the `testthat` package for unit-testing and Travis CI for continuous integration. Coverage of unit test is tracked using Coveralls. 
 
 If you encounter any issues or have feature requests, please open an issue on GitHub.
 
