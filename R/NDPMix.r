@@ -53,15 +53,14 @@ NDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   
   # error checking user inputs
   if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
+  x <- all.vars(formula[[3]]) # covariate names
+  y <- all.vars(formula[[2]]) # outcome name
   
   nparams <- length(x) + 1
   
   func_args<-mget(names(formals()),sys.frame(sys.nframe()))
   error_check(func_args,'NDP')
   
-  x <- all.vars(formula[[3]]) # covariate names
-  y <- all.vars(formula[[2]]) # outcome name
-
   if(!is.null(d_test)){
     xt <- model.matrix(data=d_test,
                        object= as.formula(paste0('~ ',paste0(x, collapse = '+'))))
