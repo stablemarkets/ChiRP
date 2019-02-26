@@ -103,7 +103,7 @@ error_check <- function(func_args, model_type){
     stop("ERROR: tau_scale should be length 1 numeric values greater than 0.")
   }
   
-  if(class(func_args$d_train[,y])!='numeric'){
+  if(! class(func_args$d_train[,y]) %in% c('numeric', 'interger') ){
     stop("ERROR: outcome is not numeric")
   }
   
