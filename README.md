@@ -7,7 +7,7 @@ Development Status:
 [![Coveralls github](https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout)](https://coveralls.io/github/stablemarkets/ChiRP)
 
 ## About
-The R package `ChiRP` is an MCMC-based implementation of **Chi**nese **R**estaurant **P**rocess (CRP) Mixtures of various regression and clustering analysis. CRP models (aka Dirichlet Process models) are a class of Bayesian nonparametric models.
+The R package `ChiRP` is an MCMC-based implementation of **Chi**nese **R**estaurant **P**rocess (CRP) mixtures for regression and clustering. CRP models (aka Dirichlet Process models) are a class of Bayesian nonparametric models. We provide facilities for zero-inflated semi-continuous outcomes, continuous outcomes, and binary outcomes.
 
 ## Installation
 
@@ -19,19 +19,16 @@ library(ChiRP)
 ``` 
 
 ## Documentation and Examples
-The companion web site at (https://stablemarkets.github.io/ChiRPsite/index.html) contains the statistical details of the model as well as several examples. 
+The [companion web site](https://stablemarkets.github.io/ChiRPsite/index.html) contains the [statistical details](https://stablemarkets.github.io/ChiRPsite/modeldesc.html) of the model as well as several [replicable examples](https://stablemarkets.github.io/ChiRPsite/examples.html). 
 
 Help documentation in `R` is also available.  After installing the package and loading it with `library()`, use `?` to access help documentation for specific functions:
 ```
-?ChiRP::NDPMix
-?ChiRP::ZDPMix
-?ChiRP::PDPMix
-?ChiRP::cluster_assign_mode
+?ChiRP::NDPMix  # for continuous outcomes
+?ChiRP::ZDPMix  # for zero-inflated, semi-continuous outcomes
+?ChiRP::PDPMix  # for binary outcomes
+?ChiRP::cluster_assign_mode # computes posterior mode cluster assignment
 ``` 
 The help file for each function contains an example that you can run directly in your `R` session.
-
-## How to Cite this Package
-Since this package was written in conjunction with [this paper](https://arxiv.org/abs/1810.09494), please cite it when using this package. Thank you!
 
 ## Reporting Bugs and Issues
 `ChiRP` uses the `testthat` package for unit-testing and Travis CI for continuous integration. Coverage of unit test is tracked using Coveralls. 
