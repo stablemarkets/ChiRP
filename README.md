@@ -30,10 +30,10 @@ Help documentation in `R` is also available.  After installing the package and l
 ``` 
 The help file for each function contains an example that you can run directly in your `R` session.
 
-## Reporting Bugs and Issues
+## Reporting Issues
 `ChiRP` uses the `testthat` package for unit-testing and Travis CI for continuous integration. Coverage of unit test is tracked using Coveralls. 
 
-If you encounter any issues or have feature requests, please open an issue on GitHub.
+If you encounter any bugs or have feature requests, please [open an issue](https://github.com/stablemarkets/ChiRP/issues) on GitHub.
 
 ## Contact
 The corresponding package author is Arman Oganisian (email: aoganisi@upenn.edu). You can follow updates about the package on [twitter](https://twitter.com/StableMarkets) .
