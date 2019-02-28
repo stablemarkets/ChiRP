@@ -5,6 +5,7 @@ Development Status:
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/stablemarkets/ChiRP.svg?branch=master)](https://travis-ci.org/stablemarkets/ChiRP)
 [![Coveralls github](https://img.shields.io/coveralls/github/stablemarkets/ChiRP.svg?style=popout)](https://coveralls.io/github/stablemarkets/ChiRP)
+
 [![status](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a/status.svg)](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a)
 
 
