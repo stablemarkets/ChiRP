@@ -6,8 +6,10 @@ error_check <- function(func_args, model_type){
   nparams <- length(x) + 1
   
   ## check init_k - initial number of clusters
-  if(class(func_args$init_k)!='numeric' | length(func_args$init_k)!=1 | func_args$init_k<0 ){
+  if(class(func_args$init_k)!='numeric' | length(func_args$init_k)!=1 ){
     stop("ERROR: init_k must be length 1 numeric integer such that 0 < init_k <= n .")
+  }else if(func_args$init_k<0){
+    stop("ERROR: init_k must be 0 < init_k <= n .")
   }else if( func_args$init_k %% 1 !=0 ){
     stop('ERROR: init_k must be an integer.')
   }else if(  func_args$init_k > nrow(func_args$d_train) ){
