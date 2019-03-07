@@ -42,7 +42,7 @@ If you encounter any bugs or have feature requests, please [open an issue](https
 You can contribute in two ways:
 
 1. Contribute to base code: First, start an issue in this repository with the proposed modification. Fork this repository, make changes/enhancements, then submit a pull request. The issue will be closed once the pull request is merged.
-2. Contribute an example: First, start an issue in the [companion site's repository](https://github.com/stablemarkets/ChiRPsite). Fork the repository and add a new example to `examples.Rmd`. Use `devtools::build_site()` to build the site. Submit a pull request in that same repository. The issue will be closed once updates are merged.
+2. Contribute an example: First, start an issue in the [companion site's repository](https://github.com/stablemarkets/ChiRPsite). Fork the repository and add a new example to `examples.Rmd`. Use `rmarkdown::render_site()` to build the site. Submit a pull request in that same repository. The issue will be closed once updates are merged.
 
 ## Contact
-The corresponding package author is Arman Oganisian (email: aoganisi@upenn.edu). You can follow updates about the package on [twitter](https://twitter.com/StableMarkets) .
+The corresponding package author is Arman Oganisian (email: aoganisi@upenn.edu). You can follow updates about the package on [twitter](https://twitter.com/StableMarkets).
