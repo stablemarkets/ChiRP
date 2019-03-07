@@ -21,7 +21,7 @@ nocite: |
 ---
 
 # Summary
-`ChiRP` is a Monte Carlo Markov Chain (MCMC) implementation of **Chi**nese **R**estaurant **P**rocess (CRP) mixtures in `R`. CRP mixtures [@ferguson1973, @blackwell1973] are a class of Bayesian nonparametric models that can be used for robust regression modeling and clustering problems.
+`ChiRP` is a Monte Carlo Markov Chain (MCMC) implementation of **Chi**nese **R**estaurant **P**rocess (CRP) mixtures in `R`. CRP mixtures [@ferguson1973; @blackwell1973] are a class of Bayesian nonparametric models that can be used for robust regression modeling and clustering problems.
 
 These are common tasks in biomedical research. However, regression often involves parametric assumptions (e.g. normality, linearity, constant variance). Similarly, clustering often involves pre-specifying the number of clusters - typically unknown to the researcher. Flexible machine learning methods exist for such problems, but they focus on predictive accuracy, making them inadequate for biomedical research applications where inference and interval estimation are of interest.
 
