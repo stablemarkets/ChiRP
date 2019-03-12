@@ -8,6 +8,8 @@ Development Status:
 
 [![status](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a/status.svg)](http://joss.theoj.org/papers/3b83a0a3f1220f97657a1075b78e480a)
 
+[![DOI](https://zenodo.org/badge/168850653.svg)](https://zenodo.org/badge/latestdoi/168850653)
+
 
 ## About
 The R package `ChiRP` is an MCMC-based implementation of **Chi**nese **R**estaurant **P**rocess (CRP) mixtures for regression and clustering. CRP models (aka Dirichlet Process models) are a class of Bayesian nonparametric models. We provide facilities for zero-inflated semi-continuous outcomes, continuous outcomes, and binary outcomes.
