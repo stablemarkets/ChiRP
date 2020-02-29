@@ -101,8 +101,10 @@ error_check <- function(func_args, model_type){
     stop("ERROR: mu_scale should be length 1 numeric values greater than 0.")
   }
   
-  if(!is.numeric(func_args$tau_scale) | length(func_args$tau_scale)!=1 | func_args$tau_scale<=0 ){
-    stop("ERROR: tau_scale should be length 1 numeric values greater than 0.")
+  if(model_type!='fDP'){
+    if(!is.numeric(func_args$tau_scale) | length(func_args$tau_scale)!=1 | func_args$tau_scale<=0 ){
+      stop("ERROR: tau_scale should be length 1 numeric values greater than 0.")
+    }
   }
   
   if(! class(func_args$d_train[,y]) %in% c('numeric', 'interger') ){
@@ -158,6 +160,20 @@ error_check <- function(func_args, model_type){
   }else if(model_type=='NDP'){
     
     if( length(func_args$phi_y)!=2 ){
+      stop("ERROR: phi_y should be a length 2 vector of positive real numbers.")
+    }else if( max(func_args$phi_y<0)==1 ){
+      stop("ERROR: phi_y contains negative values. Should be positive real numbers")
+    }
+    
+  }else if(model_type=='fDP'){
+    
+    if( !is.null(func_args$phi_y) & length(func_args$phi_y)!=2 ){
+      stop("ERROR: phi_y should be a length 2 vector of positive real numbers.")
+    }else if( max(func_args$phi_y<0)==1 ){
+      stop("ERROR: phi_y contains negative values. Should be positive real numbers")
+    }
+    
+    if( !is.null(func_args$tau_x) & length(func_args$tau_x)!=2 ){
       stop("ERROR: phi_y should be a length 2 vector of positive real numbers.")
     }else if( max(func_args$phi_y<0)==1 ){
       stop("ERROR: phi_y contains negative values. Should be positive real numbers")

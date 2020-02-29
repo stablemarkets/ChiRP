@@ -4,6 +4,8 @@
 #' The function is built for continuous outcomes.
 #' This differs from NDPMix only in terms of back-end computation and parameter monitoring. Specifically, cluster assignments are not monitored with this function for efficiency. Only predictions on training and test set are monitored. If you want nothing but regression predictions, this is the function for you. 
 #' 
+#' We recommend normalizing continuous covariates and outcomes via the \code{scale} function before running \code{fDPMix}
+#' 
 #' Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and detailed model and parameter descriptions.
 #' 
 #' @import stats
@@ -14,12 +16,12 @@
 #' @param burnin interger specifying number of burn-in MCMC draws. 
 #' @param iter interger greater than \code{burnin} specifying how many total MCMC draws to take.
 #' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
-#' @param phi_y Optional. Length two \code{as.numeric} vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance. 
+#' @param phi_y Optional. Length two \code{as.numeric} vector specifying the mean and variance of the inverse gamma prior on the outcome variance. For instance, if \code{phi_y[1]} is set to \code{var(y)}, where \code{y} is the outcome, then the inverse gamma prior is centered around the marginal empirical variance. With prior variance given by \code{phi_y[2]}. So if \code{phi_y[2]} is large, then the prior is wide around the marginal empirical variance. 
 #' @param beta_prior_mean Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on the outcomes.
 #' @param beta_prior_var Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.
 #' @param beta_var_scale Optional. A multiplicative constant that scales \code{beta_prior_var}. If you leave \code{beta_prior_mean} and \code{beta_prior_var} at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.
-#' @param mu_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. \code{mu_scale=2} specifies that the variance of the Gaussian prior is twice as large as the empirical variance.
-#' @param tau_scale Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. \code{tau_scale=2} specifies that the rate of the InvGamma prior is twice as large as the empirical variance.
+#' @param mu_scale Optional. An \code{as.numeric}, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. \code{mu_scale=2} specifies that the variance of the Gaussian prior is twice as large as the empirical variance.
+#' @param tau_x Optional numeric length two vector for specifying the inverse gamma prior on each continuous covariate's prior variance. By default, the inverse gamma prior is centered around the empirical variance. \code{tau_x[1]} is the positive constant that multiplies this empirical variance. A value of 1 indicates that the inverse gamma is centered around the empirical variance. A value of one half centers the inverse gamma prior around one half the empirical covariate variance. The second argument of \code{tau_x} is the prior variance. For example, if\code{tau_x[1]=1} and \code{tau_x[2]=.001}, then the inverse gamma prior is tight around the empirical variance. If \code{tau_x[2]=100}, then the inverse gamma prior for this covariate is widely distributed around the empirical variance.
 #' @return Returns \code{predictions$train} and \code{cluster_inds$train}. \code{predictions$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of posterior predictions. \code{cluster_inds$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of cluster assignment indicators, which can be input into the function \code{cluster_assign_mode()} to compute posterior mode assignment. \code{predictions$test} and \code{cluster_inds$test} are returned if \code{d_test} is specified.
 #' @keywords Dirichlet Process Gaussian
 #' @examples
@@ -43,14 +45,17 @@
 #'                 init_k = 10, mu_scale = 2, tau_scale = .001)
 #'                 
 #' @export
-fDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
-                 phi_y=c(shape=5, rate=1000),
-                 beta_prior_mean=NULL, beta_prior_var=NULL,
-                 init_k=10, beta_var_scale=10000, mu_scale=1, tau_scale=1){
+fDPMix<-function(d_train, formula, d_test=NULL, burnin=100,iter=1000, init_k=10, 
+                 phi_y=NULL,
+                 beta_prior_mean=NULL, beta_prior_var=NULL,beta_var_scale=1000, 
+                 mu_scale=1, tau_x =c(.05,2) ){
 
   ###------------------------------------------------------------------------###
   #### 0 - Parse User Inputs                                                ####
   ###------------------------------------------------------------------------###
+  if(is.null(phi_y)){
+    phi_y = c(var(y), 1/2*var(y))
+  }
   
   # error checking user inputs
   if( missing(d_train) ){ stop("ERROR: must specify a training data.frame.") }
@@ -60,14 +65,20 @@ fDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   nparams <- length(x) + 1
   
   func_args<-mget(names(formals()),sys.frame(sys.nframe()))
-  error_check(func_args,'NDP')
-  
+  error_check(func_args,'fDP')
+
   if(!is.null(d_test)){
-    xt <- model.matrix(data=d_test,
+    xt <- model.matrix(data=rbind(d_train[,x, drop=F], d_test[,x, drop=F]),
                        object= as.formula(paste0('~ ',paste0(x, collapse = '+'))))
     nt <- nrow(xt)
+    test_ind = c(rep(0, nrow(d_train)), rep(1, nrow(d_test)) )
+  }else{
+    xt <- model.matrix(data=d_train,
+                       object= as.formula(paste0('~ ',paste0(x, collapse = '+'))))
+    nt <- nrow(xt)
+    test_ind = c( rep(0, nrow(d_train)) )
   }
-
+  
   x_type <- vector(length = length(x))
   for(v in 1:length(x)){
     if( length(unique(d_train[, x[v] ]))==2 ){
@@ -110,21 +121,25 @@ fDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
     beta_prior_var <- beta_var_scale*diag(vcov(reg))
   }
 
-  g1=phi_y[1]
-  b1=phi_y[2]
+  ## test let phi_y[1] equal prior mean of inv gamma prior for phi
+  ## let phi_y[2] equal the prior variance. 
+  ## then set phy_i[1] = sample outcome variance 
+  ## and let phi_y[3] control flattness around sample variance.
+  
+  g1 = (1/phi_y[2])*(phi_y[1]^2) + 2
+  b1 = (g1 - 1)*phi_y[1]
 
   prior_means <- apply(x[,xall_names_num, drop=F], 2, mean)
   names(prior_means) <- xall_names_num
 
   prior_var <- mu_scale*apply(x[,xall_names_num, drop=F], 2, var)
   names(prior_var) <- xall_names_num
-
-  g2 <- rep(2, n_num_p)
+  
+  g2 = (1/tau_x[2])*( tau_x[1]*apply(x[,xall_names_num, drop=F], 2, var) + 2)
+  b2 = (g2 - 1)*tau_x[1]*apply(x[,xall_names_num, drop=F], 2, var)
   names(g2) <- xall_names_num
-
-  b2 <- tau_scale*apply(x[,xall_names_num, drop=F], 2, var)
   names(b2) <- xall_names_num
-
+  
   K <- init_k
   a <- 1
 
@@ -179,21 +194,15 @@ fDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   c_n_new <- matrix(NA, nrow = 2, ncol = n_num_p)
   colnames(c_n_new) <- xall_names_num
   
-  if(!is.null(d_test)){
-    c_b_new_test <- numeric(length = n_bin_p)
-    names(c_b_new_test) <- xall_names_bin
-    
-    c_n_new_test <- matrix(NA, nrow = 2, ncol = n_num_p)
-    colnames(c_n_new_test) <- xall_names_num
-    
-    predictions <- vector(mode = 'list', length = 2)
-    predictions[[1]] <- matrix(nrow = n, ncol = store_l)
-    predictions[[2]] <- matrix(nrow = nt, ncol = store_l)
-    names(predictions) <- c('train','test')
-  }else{
+  if(is.null(d_test)){
     predictions <- vector(mode = 'list', length = 1)
     predictions[[1]] <- matrix(nrow = n, ncol = store_l)
     names(predictions) <- c('train')
+  }else{
+    predictions <- vector(mode = 'list', length = 2)
+    predictions[[1]] <- matrix(nrow = n, ncol = store_l)
+    predictions[[2]] <- matrix(nrow = nrow(d_test), ncol = store_l)
+    names(predictions) <- c('train','test')
   }
 
   ###------------------------------------------------------------------------###
@@ -346,29 +355,19 @@ fDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
       ###--------------------------------------------------------------------###
       #### 4.0 - Predictions on a Training and Test set  & Store Results    ####
       ###--------------------------------------------------------------------###
-      if(!is.null(d_test)){
-        train_pred <- post_mean_train_fdp(n=n, K=K, x=x, uniq_clabs, name_new, 
-                                          beta_shell, beta_new, weights)
-        
-        test_pred <- post_mean_test_fdp(n=nt,K=K,alpha=a, name_new=name_new, 
-                                        uniq_clabs = uniq_clabs, x=xt, 
-                                        x_cat_shell=c_b_shell, x_num_shell=c_n_shell,
-                                        cat_idx=xall_names_bin, num_idx=xall_names_num, 
-                                        cat_new=c_b_new, num_new=c_n_new,
-                                        clabs=class_ind, beta_shell, beta_new)
-        
-        # predictions
-        predictions[['train']][, i-burnin ] <- train_pred
-        predictions[['test']][, i-burnin  ] <- test_pred
-        
+
+      test_pred <- post_mean_test_fdp(n=nt,K=K,alpha=a, name_new=name_new,
+                                      uniq_clabs = uniq_clabs, x=xt,
+                                      x_cat_shell=c_b_shell, x_num_shell=c_n_shell,
+                                      cat_idx=xall_names_bin, num_idx=xall_names_num,
+                                      cat_new=c_b_new, num_new=c_n_new,
+                                      clabs=class_ind, beta_shell, beta_new)
+      if( is.null(d_test) ){
+        predictions[['train']][, i-burnin  ] <- test_pred[test_ind==0]  
       }else{
-        train_pred <- post_mean_train_fdp(n=n, K=K, x=x, uniq_clabs, name_new, 
-                                          beta_shell, beta_new, weights)
-        
-        # predictions
-        predictions[['train']][, i-burnin ] <- train_pred
+        predictions[['train']][, i-burnin  ] <- test_pred[test_ind==0]  
+        predictions[['test']][, i-burnin  ] <- test_pred[test_ind==1]
       }
-      
     }
 
     ###----------------------------------------------------------------------###

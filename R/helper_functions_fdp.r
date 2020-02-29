@@ -67,24 +67,6 @@ class_update_train_fdp <- function(n, K , alpha, name_new, uniq_clabs, clabs,
   return(weights)
 }
 
-
-post_mean_train_fdp <- function(n, K, x, uniq_clabs, name_new, 
-                                beta_shell, beta_new, weights){
-
-  post_mean_mat <- matrix(NA, nrow=n, ncol= K + 1)
-  colnames(post_mean_mat) = c(uniq_clabs, name_new)
-
-  for( k in uniq_clabs ){
-    post_mean_mat[, k] = x %*% beta_shell[,k,drop=F]
-  }
-  post_mean_mat[, name_new] = x %*% t(beta_new)
-
-  pred = rowSums( post_mean_mat * weights )
-  
-  return(pred)
-}
-
-
 post_mean_test_fdp = function(n, K, alpha, name_new, uniq_clabs, x, 
                               x_cat_shell, x_num_shell, cat_idx, num_idx, 
                               cat_new, num_new, clabs, beta_shell, beta_new){

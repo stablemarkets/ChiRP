@@ -5,9 +5,9 @@
 \title{Function for fast sampling of DP mixture of Linear regressions.}
 \usage{
 fDPMix(d_train, formula, d_test = NULL, burnin = 100, iter = 1000,
-  phi_y = c(shape = 5, rate = 1000), beta_prior_mean = NULL,
-  beta_prior_var = NULL, init_k = 10, beta_var_scale = 10000,
-  mu_scale = 1, tau_scale = 1)
+  init_k = 10, phi_y = NULL, beta_prior_mean = NULL,
+  beta_prior_var = NULL, beta_var_scale = 1000, mu_scale = 1,
+  tau_x = c(0.05, 2))
 }
 \arguments{
 \item{d_train}{A \code{data.frame} object with outcomes and model covariates/features. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
@@ -20,19 +20,19 @@ fDPMix(d_train, formula, d_test = NULL, burnin = 100, iter = 1000,
 
 \item{iter}{interger greater than \code{burnin} specifying how many total MCMC draws to take.}
 
-\item{phi_y}{Optional. Length two \code{as.numeric} vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance.}
+\item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
+
+\item{phi_y}{Optional. Length two \code{as.numeric} vector specifying the mean and variance of the inverse gamma prior on the outcome variance. For instance, if \code{phi_y[1]} is set to \code{var(y)}, where \code{y} is the outcome, then the inverse gamma prior is centered around the marginal empirical variance. With prior variance given by \code{phi_y[2]}. So if \code{phi_y[2]} is large, then the prior is wide around the marginal empirical variance.}
 
 \item{beta_prior_mean}{Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on the outcomes.}
 
 \item{beta_prior_var}{Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.}
 
-\item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
-
 \item{beta_var_scale}{Optional. A multiplicative constant that scales \code{beta_prior_var}. If you leave \code{beta_prior_mean} and \code{beta_prior_var} at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.}
 
-\item{mu_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. \code{mu_scale=2} specifies that the variance of the Gaussian prior is twice as large as the empirical variance.}
+\item{mu_scale}{Optional. An \code{as.numeric}, scalar constant that controls how widely distributed new cluster continuous covariate means are distributed around the empirical covariate mean. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Gaussian prior on their means. \code{mu_scale=2} specifies that the variance of the Gaussian prior is twice as large as the empirical variance.}
 
-\item{tau_scale}{Optional. An numeric, scalar constant that controls how widely distributed new cluster continuous covariate variances are distributed around the empirical variance. Specifically, all continuous covariates are assumed to have Gaussian likelihood with Inverse Gamma prior on their variance. \code{tau_scale=2} specifies that the rate of the InvGamma prior is twice as large as the empirical variance.}
+\item{tau_x}{Optional numeric length two vector for specifying the inverse gamma prior on each continuous covariate's prior variance. By default, the inverse gamma prior is centered around the empirical variance. \code{tau_x[1]} is the positive constant that multiplies this empirical variance. A value of 1 indicates that the inverse gamma is centered around the empirical variance. A value of one half centers the inverse gamma prior around one half the empirical covariate variance. The second argument of \code{tau_x} is the prior variance. For example, if\code{tau_x[1]=1} and \code{tau_x[2]=.001}, then the inverse gamma prior is tight around the empirical variance. If \code{tau_x[2]=100}, then the inverse gamma prior for this covariate is widely distributed around the empirical variance.}
 }
 \value{
 Returns \code{predictions$train} and \code{cluster_inds$train}. \code{predictions$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of posterior predictions. \code{cluster_inds$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of cluster assignment indicators, which can be input into the function \code{cluster_assign_mode()} to compute posterior mode assignment. \code{predictions$test} and \code{cluster_inds$test} are returned if \code{d_test} is specified.
@@ -43,6 +43,8 @@ The function is built for continuous outcomes.
 This differs from NDPMix only in terms of back-end computation and parameter monitoring. Specifically, cluster assignments are not monitored with this function for efficiency. Only predictions on training and test set are monitored. If you want nothing but regression predictions, this is the function for you.
 }
 \details{
+We recommend normalizing continuous covariates and outcomes via the \code{scale} function before running \code{fDPMix}
+
 Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and detailed model and parameter descriptions.
 }
 \examples{
