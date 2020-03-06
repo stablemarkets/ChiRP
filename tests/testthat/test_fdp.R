@@ -56,9 +56,9 @@ test_that("Test fDP outputs", {
 
   res <- fDPMix(d_train = d, d_test = dt, formula = y ~ x + z, init_k = 10)
   
-  expect_length( res, 1 )
+  expect_length( res, 2)
 
-  expect_equal( dim(res$predictions$train), c(50, 900) )
-  expect_equal( dim(res$predictions$test),  c(30, 900) )
+  expect_equal( dim(res$train), c(50, 900) )
+  expect_equal( dim(res$test),  c(30, 900) )
 })
 
