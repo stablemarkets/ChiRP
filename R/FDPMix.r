@@ -36,8 +36,8 @@
 #' #plot(d$x,d$y, pch=20)
 #' 
 #' 
-#' res = fDPMix(d_train = d, formula = y ~ x, 
-#'             iter=100, burnin=50, tau_x = c(.01, .001) )
+#' #res = fDPMix(d_train = d, formula = y ~ x, 
+#' #             iter=100, burnin=50, tau_x = c(.01, .001) )
 #' 
 #' #lines(d$x, rowMeans(res$train), col='steelblue')
 #' #lines(d$x, apply(res$train,1,quantile,probs=.05) , col='steelblue', lty=2)
