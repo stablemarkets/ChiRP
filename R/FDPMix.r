@@ -1,8 +1,7 @@
 #' Function for fast sampling of DP mixture of Linear regressions.
 #'
-#' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior predictions and posterior clustering for training and test sets.
-#' The function is built for continuous outcomes.
-#' This differs from NDPMix only in terms of back-end computation and parameter monitoring. Specifically, cluster assignments are not monitored with this function for efficiency. Only predictions on training and test set are monitored. If you want nothing but regression predictions, this is the function for you. 
+#' This function takes in a training data.frame and optional testing data.frame and performs posterior sampling. It returns posterior mean regression line for training and test sets. The function is built for continuous outcomes.
+#' This differs from NDPMix in the following ways: NDPMix returns draws from the posterior *predictive* distribution of the outcome, whereas fDPMix() returns the regression line. This will have the same mean as the NDPMix predictions, but lower variance. Finally, the back-end computation is different, with regression line evaluation at point X being evaluated as a weighted average of cluster-specific regression evaluations at X. This is faster than NDPMix which takes a Monte Carlo appraoch: assign X to one of the cluster specific regressions, then draw a predicted outcome from that cluster's regression.
 #' 
 #' We recommend normalizing continuous covariates and outcomes via the \code{scale} function before running \code{fDPMix}
 #' 
@@ -12,11 +11,11 @@
 #' 
 #' @param d_train A \code{data.frame} object with outcomes and model covariates/features. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
 #' @param d_test Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.
-#' @param formula Specified in the usual way, e.g. for \code{p=2} covariates, \code{y ~ x1 + x1}. All covariates - continuous and binary - must be \code{as.numeric} , with binary variables coded as \code{1} or \code{0}. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
+#' @param formula Specified in the usual way, e.g. for \code{p=2} covariates, \code{y ~ x1 + x2}. All covariates - continuous and binary - must be \code{as.numeric} , with binary variables coded as \code{1} or \code{0}. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
 #' @param burnin interger specifying number of burn-in MCMC draws. 
 #' @param iter interger greater than \code{burnin} specifying how many total MCMC draws to take.
 #' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
-#' @param phi_y Optional. Length two \code{as.numeric} vector specifying the mean and variance of the inverse gamma prior on the outcome variance. For instance, if \code{phi_y[1]} is set to \code{var(y)}, where \code{y} is the outcome, then the inverse gamma prior is centered around the marginal empirical variance. With prior variance given by \code{phi_y[2]}. So if \code{phi_y[2]} is large, then the prior is wide around the marginal empirical variance. 
+#' @param phi_y Optional. Length two \code{as.numeric} vector specifying the mean and variance of the inverse gamma prior on the outcome variance. By default, \code{phi_y[1]} is set to \code{var(y)}, where \code{y} is the outcome, so the inverse gamma prior is centered around the marginal empirical variance. With prior variance given by \code{phi_y[2]}. By default, \code{phi_y[2]=.5*var(y)}. This value should be large to be "flat" and small to be "tight" around the marginal empirical variance. 
 #' @param beta_prior_mean Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on the outcomes.
 #' @param beta_prior_var Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.
 #' @param beta_var_scale Optional. A multiplicative constant that scales \code{beta_prior_var}. If you leave \code{beta_prior_mean} and \code{beta_prior_var} at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.
@@ -25,24 +24,24 @@
 #' @return Returns \code{predictions$train} and \code{cluster_inds$train}. \code{predictions$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of posterior predictions. \code{cluster_inds$train} returns an \code{nrow(d_train)} by \code{iter - burnin} matrix of cluster assignment indicators, which can be input into the function \code{cluster_assign_mode()} to compute posterior mode assignment. \code{predictions$test} and \code{cluster_inds$test} are returned if \code{d_test} is specified.
 #' @keywords Dirichlet Process Gaussian
 #' @examples
-#' # Simulate data from sin() wave.
-#' set.seed(3)
-#' 
-#' n <- 200
-#' # training 
-#' x<-seq(1,10*pi, length.out = n) # confounder
-#' y<-rnorm( n = length(x), sin(.5*x), .07*x)
-#' d <- data.frame(x=x, y=y)
-#' d$x <- scale(d$x) # standardize covariates
-#' d_test <- data.frame(x=seq(1.5,2,.01))
-#' 
-#' # run model.
 #' set.seed(1)
-#' NDP_res<-NDPMix(d_train = d, d_test = d_test,
-#'                 formula = y ~ x,
-#'                 burnin=100, iter = 200,
-#'                 phi_y = c(5,10), beta_var_scale = 10000, 
-#'                 init_k = 10, mu_scale = 2, tau_scale = .001)
+#' 
+#' N = 200
+#' x<-seq(1,10*pi, length.out = N) # confounder
+#' y<-rnorm(n = length(x), sin(.5*x), .07*x )
+#' d <- data.frame(x=x, y=y)
+#' d$x <- as.numeric(scale(d$x))
+#' d$y <- as.numeric(scale(d$y))
+#' 
+#' plot(d$x,d$y, pch=20)
+#' 
+#' 
+#' res = fDPMix(d_train = d, formula = y ~ x, 
+#'             iter=1000, burnin=500, tau_x = c(.01, .001) )
+#' 
+#' lines(d$x, rowMeans(res$train), col='steelblue')
+#' lines(d$x, apply(res$train,1,quantile,probs=.05) , col='steelblue', lty=2)
+#' lines(d$x, apply(res$train,1,quantile,probs=.90) , col='steelblue', lty=2)
 #'                 
 #' @export
 fDPMix<-function(d_train, formula, d_test=NULL, burnin=100,iter=1000, init_k=10, 

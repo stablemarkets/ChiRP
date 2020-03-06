@@ -174,9 +174,9 @@ error_check <- function(func_args, model_type){
     }
     
     if( !is.null(func_args$tau_x) & length(func_args$tau_x)!=2 ){
-      stop("ERROR: phi_y should be a length 2 vector of positive real numbers.")
+      stop("ERROR: tau_x should be a length 2 vector of positive real numbers.")
     }else if( max(func_args$phi_y<0)==1 ){
-      stop("ERROR: phi_y contains negative values. Should be positive real numbers")
+      stop("ERROR: tau_x contains negative values. Should be positive real numbers")
     }
     
   }else if(model_type=='PDP'){
