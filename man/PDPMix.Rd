@@ -4,10 +4,20 @@
 \alias{PDPMix}
 \title{Function for posterior sampling of DP mixture of logistic regressions for binary data.}
 \usage{
-PDPMix(d_train, formula, d_test = NULL, burnin = 100, iter = 1000,
-  beta_prior_mean = NULL, beta_prior_var = NULL, init_k = 10,
-  beta_var_scale = 1000, mu_scale = 1, tau_scale = 1,
-  prop_sigma_b = diag(rep(0.025, nparams)))
+PDPMix(
+  d_train,
+  formula,
+  d_test = NULL,
+  burnin = 100,
+  iter = 1000,
+  beta_prior_mean = NULL,
+  beta_prior_var = NULL,
+  init_k = 10,
+  beta_var_scale = 1000,
+  mu_scale = 1,
+  tau_scale = 1,
+  prop_sigma_b = diag(rep(0.025, nparams))
+)
 }
 \arguments{
 \item{d_train}{A \code{data.frame} object with outcomes and model covariates/features. The outcome must be \code{numeric} coded with \code{1}s and \code{0}s. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
