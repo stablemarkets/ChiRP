@@ -8,26 +8,26 @@ credible_gradient(
   x,
   post_draws,
   col_gradient = "lightblue",
-  col_median_line = "steelblue"
+  col_mean_line = "steelblue"
 )
 }
 \arguments{
-\item{x}{A \code{data.frame} object with outcomes and model covariates/features. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
+\item{x}{A vector of type \code{as.numeric} to plot on the x dimension of the plot.}
 
-\item{post_draws}{Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.}
+\item{post_draws}{matrix with dimensions length(x) by # posterior draws.}
 
-\item{formula}{Specified in the usual way, e.g. for \code{p=2} covariates, \code{y ~ x1 + x1}. All covariates - continuous and binary - must be \code{as.numeric} , with binary variables coded as \code{1} or \code{0}. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.}
+\item{col_gradient}{Optional. Defaults to lightblue. Darkest color that gradient goes to.}
 
-\item{burnin}{interger specifying number of burn-in MCMC draws.}
+\item{col_mean_line}{Optional. Defaults to steelblue. Color of the posterior mean regression line.}
 }
 \value{
-overlays credible band and posterior median line.
+overlays credible band and posterior mean line.
 }
 \description{
-This function takes as input some continuous covariate \code{x} and output of predictions from either NDPMix, ZDPMix, fDPMix, etc. It outputs a credible band and posterior median line of the predictions across \code{x}
+This function takes as input some continuous covariate \code{x} and predictions from NDPMix, ZDPMix, fDPMix, etc. It outputs a credible band and posterior mean line of the predictions across \code{x}
 }
 \details{
-Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and detailed model and parameter descriptions.
+Please see \url{https://stablemarkets.github.io/ChiRPsite/index.html} for examples and details.
 }
 \examples{
 set.seed(1)
