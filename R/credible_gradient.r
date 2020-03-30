@@ -58,5 +58,5 @@ credible_gradient = function(x, post_draws,
             col = colvec[as.character(i)], border = FALSE)
   }
   
-  lines(x, apply(post_draws, 1, median), col=col_mean_line , pch=20 )
+  lines(x, apply(post_draws, 1, median), col=col_median_line , pch=20 )
 }
