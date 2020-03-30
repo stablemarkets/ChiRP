@@ -33,15 +33,23 @@
 #' d$x <- as.numeric(scale(d$x))
 #' d$y <- as.numeric(scale(d$y))
 #' 
-#' #plot(d$x,d$y, pch=20)
+#' plot(d$x,d$y, pch=20, xlim=c(min(d$x), max(d$x)+1 ), col='gray')
+#' 
+#' d_test = data.frame(x=seq(max(d$x), max(d$x+1 ), .01 ))
 #' 
 #' 
-#' #res = fDPMix(d_train = d, formula = y ~ x, 
-#' #             iter=100, burnin=50, tau_x = c(.01, .001) )
+#' res = fDPMix(d_train = d, d_test = d_test, formula = y ~ x,
+#'              iter=100, burnin=50, tau_x = c(.01, .001) )
 #' 
-#' #lines(d$x, rowMeans(res$train), col='steelblue')
-#' #lines(d$x, apply(res$train,1,quantile,probs=.05) , col='steelblue', lty=2)
-#' #lines(d$x, apply(res$train,1,quantile,probs=.90) , col='steelblue', lty=2)
+#' ## in-sample
+#' lines(d$x, rowMeans(res$train), col='steelblue')
+#' lines(d$x, apply(res$train,1,quantile,probs=.05) , col='steelblue', lty=2)
+#' lines(d$x, apply(res$train,1,quantile,probs=.90) , col='steelblue', lty=2)
+#' 
+#' ## out of sample
+#' lines(d_test$x, rowMeans(res$test), col='pink')
+#' lines(d_test$x, apply(res$test,1,quantile,probs=.05) , col='pink', lty=2)
+#' lines(d_test$x, apply(res$test,1,quantile,probs=.90) , col='pink', lty=2)
 #'                 
 #' @export
 fDPMix<-function(d_train, formula, d_test=NULL, burnin=100,iter=1000, init_k=10, 
