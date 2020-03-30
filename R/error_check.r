@@ -204,3 +204,16 @@ error_check <- function(func_args, model_type){
   
 }
 
+
+error_check_credible_gradient = function(func_args){
+  
+  if( class(func_args$x) != 'numeric' ){
+    stop("ERROR: x is not numeric")
+  }else if( class(func_args$post_draws) != "matrix" ){
+    stop("ERROR: post_draws is not a matrix. Should be matrix with dimensions length(x) by #posterior draws ")
+  }else if( !is.character(func_args$col_gradient) | !is.character(func_args$col_mean_line) ){
+    stop("ERROR: either col_gradient or col_mean_line is not a character vector specifying a particular color")
+  }
+  
+}
+
