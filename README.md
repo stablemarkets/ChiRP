@@ -28,7 +28,7 @@ The [companion web site](https://stablemarkets.github.io/ChiRPsite/index.html) c
 
 Help documentation in `R` is also available.  After installing the package and loading it with `library()`, use `?` to access help documentation for specific functions:
 ```
-?ChiRP::NDPMix  # for continuous outcomes: outputs draws of posterior *predictive* Y | ~ N( E[Y|X], sd )), not draws of E[Y|X].
+?ChiRP::NDPMix  # for continuous outcomes: outputs draws of posterior *predictive* Y | X ~ N( E[Y|X], sd )), not draws of E[Y|X].
 ?ChiRP::fDPMix  # for continuous outcomes: outputs draws of posterior regression E[Y|X] )
 ?ChiRP::ZDPMix  # for zero-inflated, semi-continuous outcomes
 ?ChiRP::PDPMix  # for binary outcomes
