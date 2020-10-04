@@ -18,7 +18,7 @@ error_check <- function(func_args, model_type){
     
   ## Check burnin and iter settings
   if( ! (func_args$burnin %% 1 ==0 & func_args$iter %% 1 ==0) ){
-    stop("ERROR: burnin and iter must be intergers.")
+    stop("ERROR: burnin and iter must be integers.")
   }else if( func_args$burnin < 0 | func_args$iter < 0){
     stop("ERROR: burnin and iter must be positive.")
   }else if(func_args$burnin==0){
@@ -107,7 +107,7 @@ error_check <- function(func_args, model_type){
     }
   }
   
-  if(! class(func_args$d_train[,y]) %in% c('numeric', 'interger') ){
+  if(! class(func_args$d_train[,y]) %in% c('numeric', 'integer') ){
     stop("ERROR: outcome is not numeric")
   }
   
