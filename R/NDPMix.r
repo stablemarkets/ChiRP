@@ -77,7 +77,7 @@ NDPMix<-function(d_train, formula, d_test=NULL, burnin=100, iter=1000,
   }
 
   store_l <- iter - burnin
-  y <- d_train[,y]
+  y <- d_train[[y]]
   x_names <- x
   x <- model.matrix(data=d_train, object = formula )
 

@@ -107,7 +107,7 @@ error_check <- function(func_args, model_type){
     }
   }
   
-  if(! class(func_args$d_train[,y]) %in% c('numeric', 'integer') ){
+  if(! class(func_args$d_train[[y]]) %in% c('numeric', 'integer') ){
     stop("ERROR: outcome is not numeric")
   }
   
