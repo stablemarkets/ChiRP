@@ -69,7 +69,7 @@ fDPMix<-function(d_train, formula, d_test=NULL, burnin=100,iter=1000, init_k=10,
   
   nparams <- length(x) + 1
   
-  y <- d_train[[y]]
+  y <- d_train[,y]
   
   if(is.null(phi_y)){
     phi_y = c(var(y), 1/2*var(y))
