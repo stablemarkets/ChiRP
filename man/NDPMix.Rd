@@ -26,9 +26,9 @@ NDPMix(
 
 \item{d_test}{Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.}
 
-\item{burnin}{interger specifying number of burn-in MCMC draws.}
+\item{burnin}{integer specifying number of burn-in MCMC draws.}
 
-\item{iter}{interger greater than \code{burnin} specifying how many total MCMC draws to take.}
+\item{iter}{integer greater than \code{burnin} specifying how many total MCMC draws to take.}
 
 \item{phi_y}{Optional. Length two \code{as.numeric} vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance.}
 
@@ -36,7 +36,7 @@ NDPMix(
 
 \item{beta_prior_var}{Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.}
 
-\item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
+\item{init_k}{Optional. integer specifying the initial number of clusters to kick off the MCMC sampler.}
 
 \item{beta_var_scale}{Optional. A multiplicative constant that scales \code{beta_prior_var}. If you leave \code{beta_prior_mean} and \code{beta_prior_var} at their defaults, This constant toggles how wide new cluster parameters are dispersed around the observed data parameters.}
 

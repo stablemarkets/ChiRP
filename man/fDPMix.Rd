@@ -26,11 +26,11 @@ fDPMix(
 
 \item{d_test}{Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.}
 
-\item{burnin}{interger specifying number of burn-in MCMC draws.}
+\item{burnin}{integer specifying number of burn-in MCMC draws.}
 
-\item{iter}{interger greater than \code{burnin} specifying how many total MCMC draws to take.}
+\item{iter}{integer greater than \code{burnin} specifying how many total MCMC draws to take.}
 
-\item{init_k}{Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.}
+\item{init_k}{Optional. integer specifying the initial number of clusters to kick off the MCMC sampler.}
 
 \item{phi_y}{Optional. Length two \code{as.numeric} vector specifying the mean and variance of the inverse gamma prior on the outcome variance. By default, \code{phi_y[1]} is set to \code{var(y)}, where \code{y} is the outcome, so the inverse gamma prior is centered around the marginal empirical variance. With prior variance given by \code{phi_y[2]}. By default, \code{phi_y[2]=.5*var(y)}. This value should be large to be "flat" and small to be "tight" around the marginal empirical variance.}
 

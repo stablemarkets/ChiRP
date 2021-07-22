@@ -10,9 +10,9 @@
 #' @param d_train A \code{data.frame} object with outcomes and model covariates/features. All features must be \code{as.numeric} - either continuous or binary with binary variables coded using \code{1} and \code{0}. Categorical features are not supported. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
 #' @param d_test Optional \code{data.frame} object containing a test set of subjects containing all variables specifed in \code{formula}. The same rules that apply to \code{d_train} apply to \code{d_test}.
 #' @param formula Specified in the usual way, e.g. for \code{p=2} covariates, \code{y ~ x1 + x1}. All covariates - continuous and binary - must be \code{as.numeric} , with binary variables coded as \code{1} or \code{0}. We recommend standardizing all continuous features. NA values are not allowed and each row should represent a single subject, longitudinal data is not supported.
-#' @param burnin interger specifying number of burn-in MCMC draws. 
-#' @param iter interger greater than \code{burnin} specifying how many total MCMC draws to take.
-#' @param init_k Optional. Interger specifying the initial number of clusters to kick off the MCMC sampler.
+#' @param burnin integer specifying number of burn-in MCMC draws. 
+#' @param iter integer greater than \code{burnin} specifying how many total MCMC draws to take.
+#' @param init_k Optional. integer specifying the initial number of clusters to kick off the MCMC sampler.
 #' @param phi_y Optional. Length two \code{as.numeric} vector specifying the shape and rate, respectively, of the Inverse Gamma hyper-prior placed on the outcome variance. 
 #' @param beta_prior_mean Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying mean of the Gaussian prior on the outcome model's conditional mean parameter vector. Default is regression coefficients from running OLS on the outcomes.
 #' @param beta_prior_var Optional. If there are \code{p} covariates, a length \code{p+1} \code{as.numeric} vector specifying variance of the Gaussian prior on the outcome model's conditional mean parameter vector. The full covarince of the prior is set to be diagonal. This vector specifies the diagonal enteries of this prior covariance. Default is estimated variances from running OLS on the outcome.
